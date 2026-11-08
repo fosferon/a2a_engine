@@ -1,0 +1,26 @@
+{
+  "kind": "message",
+  "messageId": "msg_ckpt_01",
+  "role": "agent",
+  "contextId": "ctx_abc",
+  "taskId": "task_xyz",
+  "parts": [
+    {
+      "kind": "text",
+      "text": "I've drafted the outline. Need a decision on whether to include the preamble."
+    },
+    {
+      "kind": "data",
+      "data": { "outline": ["intro", "body", "conclusion"] }
+    },
+    {
+      "kind": "data",
+      "data": { "worker_state": "stage_3", "cursor": 427 },
+      "metadata": {
+        "type": "checkpoint",
+        "owner": "planner",
+        "session": "sess_abc123"
+      }
+    }
+  ]
+}

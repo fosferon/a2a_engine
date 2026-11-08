@@ -1,0 +1,10 @@
+{
+  "kind": "status-update",
+  "taskId": "task_stream_01",
+  "contextId": "ctx_01",
+  "final": false,
+  "status": {
+    "state": "working",
+    "timestamp": "2026-04-19T10:02:00Z"
+  }
+}

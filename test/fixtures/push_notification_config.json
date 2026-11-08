@@ -1,0 +1,9 @@
+{
+  "url": "https://caller.example/a2a/callback",
+  "id": "push_cfg_01",
+  "token": "opaque-per-task-token",
+  "authentication": {
+    "schemes": ["Bearer"],
+    "credentials": "eyJraWQiOiJ..."
+  }
+}

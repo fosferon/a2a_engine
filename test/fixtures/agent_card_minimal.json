@@ -1,0 +1,21 @@
+{
+  "name": "router",
+  "description": "Example routing agent.",
+  "version": "0.1.0",
+  "protocolVersion": "1.0",
+  "url": "https://agent.example/a2a/router",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true
+  },
+  "skills": [
+    {
+      "id": "route",
+      "name": "Route work",
+      "description": "Decomposes requests into subtasks and routes to specialist agents.",
+      "tags": ["routing", "example"]
+    }
+  ],
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"]
+}

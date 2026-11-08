@@ -1,0 +1,43 @@
+{
+  "name": "planner",
+  "description": "Example agent with a code toolkit.",
+  "version": "0.2.3",
+  "protocolVersion": "1.0",
+  "url": "https://agent.example/a2a/planner",
+  "preferredTransport": "JSONRPC",
+  "additionalInterfaces": [
+    { "transport": "JSONRPC", "url": "https://agent.example/a2a/planner" },
+    { "transport": "HTTP+JSON", "url": "https://agent.example/a2a/planner/rest" }
+  ],
+  "provider": { "organization": "Example Org", "url": "https://example.org" },
+  "documentationUrl": "https://agent.example/docs/planner",
+  "iconUrl": "https://agent.example/icons/planner.png",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true,
+    "stateTransitionHistory": true,
+    "extensions": [
+      { "uri": "https://example.org/ext/checkpoint/v1", "required": true, "description": "Worker checkpoint routing" }
+    ]
+  },
+  "skills": [
+    {
+      "id": "code_review",
+      "name": "Code review",
+      "description": "Deep review with actionable suggestions.",
+      "tags": ["code", "review"],
+      "examples": ["Review this PR for race conditions.", "Find security issues in this diff."],
+      "inputModes": ["text/markdown", "text/x-diff"],
+      "outputModes": ["text/markdown"]
+    },
+    {
+      "id": "migration",
+      "name": "Schema migration",
+      "description": "Generates idempotent Ecto migrations.",
+      "tags": ["ecto", "sql", "migration"]
+    }
+  ],
+  "defaultInputModes": ["text/plain", "text/markdown", "application/json"],
+  "defaultOutputModes": ["text/plain", "text/markdown", "application/json"],
+  "supportsAuthenticatedExtendedCard": true
+}

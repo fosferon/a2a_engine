@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "id": "req_02",
+  "error": {
+    "code": -32001,
+    "message": "Task not found",
+    "data": { "taskId": "unknown_task" }
+  }
+}

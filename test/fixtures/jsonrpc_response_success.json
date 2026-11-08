@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": "req_01",
+  "result": {
+    "kind": "task",
+    "id": "task_01",
+    "contextId": "ctx_01",
+    "status": { "state": "working", "timestamp": "2026-04-19T10:00:00Z" }
+  }
+}

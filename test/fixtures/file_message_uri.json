@@ -1,0 +1,14 @@
+{
+  "kind": "message",
+  "messageId": "msg_file_02",
+  "role": "agent",
+  "parts": [
+    {
+      "kind": "file",
+      "file": {
+        "uri": "https://example.com/report.pdf",
+        "mimeType": "application/pdf"
+      }
+    }
+  ]
+}

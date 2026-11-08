@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        elixir: ["1.19"]
+        otp: ["27", "28"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-otp-${{ matrix.otp }}-elixir-${{ matrix.elixir }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-otp-${{ matrix.otp }}-elixir-${{ matrix.elixir }}-mix-
+
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+      - run: mix deps.get
+      - run: mix format --check-formatted
+      - run: mix compile --warnings-as-errors
+      - run: MIX_ENV=prod mix compile --warnings-as-errors
+      - run: mix test
+
+  prod-consumer:
+    name: :prod consumer without Bandit
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.19"
+          otp-version: "28"
+
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+
+      # A path-dep consumer with no Bandit: the library's own :prod build has
+      # Bandit (optional, no :only), so only a consumer catches the missing-dep
+      # warnings that the apply/3 + ensure_bandit!/0 guard is meant to prevent.
+      - name: Compile downstream :prod consumer without Bandit
+        run: |
+          consumer="$RUNNER_TEMP/a2a_consumer"
+          mkdir -p "$consumer/lib"
+          cat > "$consumer/mix.exs" <<EOF
+          defmodule A2aConsumer.MixProject do
+            use Mix.Project
+
+            def project do
+              [app: :a2a_consumer, version: "0.1.0", elixir: "~> 1.19", deps: deps()]
+            end
+
+            def application, do: [extra_applications: [:logger]]
+
+            defp deps do
+              [{:a2a_engine, path: "$GITHUB_WORKSPACE"}]
+            end
+          end
+          EOF
+          cd "$consumer"
+          mix deps.get
+          # Deps warnings are not promoted by --warnings-as-errors, so grep too.
+          if ! MIX_ENV=prod mix compile --warnings-as-errors > compile.log 2>&1; then
+            cat compile.log
+            echo "::error::downstream :prod compile failed"
+            exit 1
+          fi
+          cat compile.log
+          # Parse diagnostics into blocks: a warning header starts a block that
+          # runs to the next blank line or warning header, so an a2a_engine path
+          # is found however far below the header it appears. Headers are matched
+          # case-insensitively, with an optional "[...]" prefix, as "warning:" or
+          # "warn:".
+          if ! awk '
+            function flush() {
+              if (in_block && block ~ /(^|\/)a2a_engine\//) {
+                printf "%s", block > "/dev/stderr"
+                bad = 1
+              }
+              block = ""
+              in_block = 0
+            }
+            {
+              lower = tolower($0)
+              if (lower ~ /^[[:space:]]*(\[[^]]*\][[:space:]]*)?warn(ing)?:/) {
+                flush()
+                in_block = 1
+                block = $0 "\n"
+                next
+              }
+              if (in_block && $0 ~ /^[[:space:]]*$/) {
+                flush()
+                next
+              }
+              if (in_block) block = block $0 "\n"
+            }
+            END {
+              flush()
+              exit bad
+            }
+          ' compile.log; then
+            echo "::error::a2a_engine emitted warnings in a :prod consumer without Bandit"
+            exit 1
+          fi
+          # A clean warning scan must not pass because the dep was never compiled.
+          # Mix prints this marker whenever it actually compiles the dependency;
+          # a cached consumer build prints an empty log and fails closed here.
+          if ! grep -qE '^==> a2a_engine$' compile.log; then
+            echo "::error::consumer build did not compile a2a_engine (no '==> a2a_engine' marker)"
+            exit 1
+          fi

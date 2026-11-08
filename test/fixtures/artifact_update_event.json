@@ -1,0 +1,14 @@
+{
+  "kind": "artifact-update",
+  "taskId": "task_stream_01",
+  "contextId": "ctx_01",
+  "append": true,
+  "lastChunk": false,
+  "artifact": {
+    "artifactId": "art_stream_01",
+    "name": "report.md",
+    "parts": [
+      { "kind": "text", "text": "## Section 2\n\nMore content..." }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "kind": "task",
+  "id": "task_input_01",
+  "contextId": "ctx_01",
+  "status": {
+    "state": "input-required",
+    "message": {
+      "kind": "message",
+      "messageId": "msg_req_01",
+      "role": "agent",
+      "parts": [
+        { "kind": "text", "text": "Which timezone should I assume for the schedule?" }
+      ]
+    },
+    "timestamp": "2026-04-19T10:05:00Z"
+  },
+  "history": [
+    {
+      "kind": "message",
+      "messageId": "msg_user_01",
+      "role": "user",
+      "parts": [{ "kind": "text", "text": "Schedule the briefing for tomorrow morning." }]
+    }
+  ]
+}

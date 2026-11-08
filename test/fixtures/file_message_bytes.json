@@ -1,0 +1,15 @@
+{
+  "kind": "message",
+  "messageId": "msg_file_01",
+  "role": "user",
+  "parts": [
+    {
+      "kind": "file",
+      "file": {
+        "bytes": "SGVsbG8gZnJvbSBBMkE=",
+        "mimeType": "text/plain",
+        "name": "hello.txt"
+      }
+    }
+  ]
+}

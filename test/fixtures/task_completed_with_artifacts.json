@@ -1,0 +1,18 @@
+{
+  "kind": "task",
+  "id": "task_done_01",
+  "contextId": "ctx_01",
+  "status": {
+    "state": "completed",
+    "timestamp": "2026-04-19T10:15:00Z"
+  },
+  "artifacts": [
+    {
+      "artifactId": "art_01",
+      "name": "summary.md",
+      "parts": [
+        { "kind": "text", "text": "# Meeting summary\n\nScheduled for 10:00 AM UTC." }
+      ]
+    }
+  ]
+}

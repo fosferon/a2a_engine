@@ -1,0 +1,17 @@
+{
+  "jsonrpc": "2.0",
+  "id": "req_01",
+  "method": "message/send",
+  "params": {
+    "message": {
+      "kind": "message",
+      "messageId": "msg_01",
+      "role": "user",
+      "parts": [{ "kind": "text", "text": "Please summarise the attached report." }]
+    },
+    "configuration": {
+      "blocking": false,
+      "historyLength": 10
+    }
+  }
+}
